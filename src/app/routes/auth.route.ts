@@ -1,11 +1,12 @@
 import { Router, type Request, type Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { userController } from "../controllers/user.controller";
+import { authController } from "../controllers/auth.controller";
 
 const router = Router();
 
-router.post("/register", userController.registerUser);
 
-router.get("/me", userController.validateUser);
+router.post("/", authController.credentialLogin);
+router.post('/logout', authController.logout)
 
-export const userRoutes = router;
+export const AuthRoutes = router;
