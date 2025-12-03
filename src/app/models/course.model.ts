@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { fa } from "zod/v4/locales";
 
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true, index: "text" },
@@ -6,9 +7,10 @@ const courseSchema = new mongoose.Schema({
   instructor: { type: String, required: true },
   category: { type: String, index: true },
   price: Number,
-  thumbnail: String,
-  lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" }],
-  batch: { type: mongoose.Schema.Types.ObjectId, ref: "Batch" }
+  thumbnail: { type: String, required: false},
+  lessons: [{ type: mongoose.Schema.Types.ObjectId, ref: "Lesson" , required: false}],
+ 
+  batch: { type: Number, ref: "Batch" , required: false}
 }, { timestamps: true });
 
 courseSchema.index({ title: "text", instructor: "text" });
