@@ -14,4 +14,5 @@ router.delete("/delete/:id", courseController.deleteCourse);
 
 
 
+
 export const courseRoutes = router;

@@ -5,6 +5,7 @@ import { courseValidationSchema } from "../validation/course.validation";
 import { verifyToken } from "../utils/jwt";
 import { verifyRole } from "../../middlewares/verifyRole";
 import { Role } from "../models/user.model";
+import { Enrollment } from "../models/enrollment.model";
 const allCourses = async (req: Request, res: Response) => {
     try {
         const courses = await Course.find();
@@ -128,4 +129,5 @@ const deleteCourse = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Internal Server Error" });
     }
 }
-export const courseController = { allCourses, courseById, createCourse, updateCourse, deleteCourse }
+
+export const courseController = { allCourses, courseById, createCourse, updateCourse, deleteCourse  }

@@ -1,7 +1,7 @@
 {
   "name": "my-express-app",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts"
+   "dev": "ts-node-dev --respawn --transpile-only ./src/server.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

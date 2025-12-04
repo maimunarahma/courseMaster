@@ -25,6 +25,7 @@ const registerUser = async (req : Request, res : Response) => {
             password: hashedPassword,
             role
         });
+        await newUser.save();
           const JwtPayload={
         userId: newUser._id,
         email: newUser.email,
