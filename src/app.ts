@@ -8,29 +8,22 @@ const app = express();
 app.use(cookieParser());
 app.use(express.json());
 
-// --- FIXED CORS CONFIG ---
 app.use(
   cors({
     origin: [
       "http://localhost:8080",
-      "https://courseflow-platform.vercel.app"
+      "https://courseflow-platform.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept"
-    ],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 
-// ROUTES
 app.use("/api/v1", router);
 
-app.get("/", async (req: Request, res: Response) => {
+app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
     message: "welcome to courseMaster System",
   });
