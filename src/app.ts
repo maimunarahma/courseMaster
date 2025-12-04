@@ -12,7 +12,6 @@ app.use(express.json());
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
       "http://localhost:8080",
       "https://courseflow-platform.vercel.app"
     ],
@@ -27,8 +26,6 @@ app.use(
   })
 );
 
-// --- IMPORTANT: Handle OPTIONS manually ---
-app.options("*", cors());
 
 // ROUTES
 app.use("/api/v1", router);
