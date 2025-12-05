@@ -10,7 +10,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["*", "http://localhost:8080", "https://courseflow-platform.vercel.app"],
+    origin: ["*", "http://localhost:8080", "https://coursemaster-1.onrender.com"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
