@@ -8,8 +8,9 @@
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "skipLibCheck": true,
-        "types": ["node", "express", "cors", "cookie-parser", "jsonwebtoken"]
+    "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src"],
+    "exclude": ["node_modules","dist"]
+
 }
