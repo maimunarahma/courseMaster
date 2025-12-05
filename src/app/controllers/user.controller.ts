@@ -34,10 +34,13 @@ const registerUser = async (req : Request, res : Response) => {
      const accessToken= generateToken(JwtPayload, "secret", "1d")
      const refreshToken= generateToken(JwtPayload, "secretrefresh", "30d")
 
-      res.cookie('refreshToken', refreshToken,{
-            httpOnly:true,
-            secure:false
-      })
+   res.cookie("refreshToken", refreshToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  maxAge: 30*24*60*60*1000,
+});
+
         return res.status(201).json({ message: "User registered successfully", user: {
             name: newUser.name,
             email: newUser.email,
