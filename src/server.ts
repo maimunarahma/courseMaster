@@ -34,10 +34,4 @@ const startServer = async () => {
   }
 };
 
-// Only start a listening server when NOT running on Vercel serverless environment
-if (!process.env.VERCEL) {
   startServer();
-} else {
-  // In Vercel we expose the app via the serverless function at /api
-  console.log('Running on Vercel - serverless mode, not starting HTTP listener');
-}
