@@ -1,16 +1,16 @@
-import { JwtPayload, SignOptions } from "jsonwebtoken"
-import  jwt  from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 
-export const generateToken=(payload :JwtPayload, secret :string ,expiresIn :string)=>{
-   const token= jwt.sign(payload, secret, {
-    expiresIn 
-   } as SignOptions)  
-   return token;
-}
+export const generateToken = (
+  payload: object ,
+  secret: string,
+  expiresIn: string
+) => {
+  return jwt.sign(payload, secret, {
+    expiresIn,
+  });
+};
 
-export const verifyToken= (token : string, secret: string)=>{
-     const verifiedToken=jwt.verify(token,secret)
-     return verifiedToken
-      
-}
+export const verifyToken = (token: string, secret: string) => {
+  return jwt.verify(token, secret) ;
+};

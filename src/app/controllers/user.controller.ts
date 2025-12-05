@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import { User } from "../models/user.model";
 import { generateToken, verifyToken } from "../utils/jwt";
-import { JwtPayload } from "jsonwebtoken"
+import jwt from "jsonwebtoken"
 
 const registerUser = async (req : Request, res : Response) => {
     try {
