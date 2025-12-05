@@ -21,7 +21,7 @@ const QuestionSchema = new mongoose.Schema({
         type: String, 
         required: true 
     }
-}, { _id: false });
+});
 
 // --- Main Quiz Schema ---
 const QuizSchema = new mongoose.Schema({
@@ -61,4 +61,4 @@ const QuizSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-export default mongoose.model('Quiz', QuizSchema);
+export const Quiz= mongoose.model('Quiz', QuizSchema);

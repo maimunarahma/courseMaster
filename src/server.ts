@@ -11,11 +11,7 @@ const startServer = async () => {
 
   try {
     // Connect to MongoDB
-    await mongoose.connect(MONGO_URI, {
-      // optional settings
-      autoIndex: true,
-      serverSelectionTimeoutMS: 10000, // fail fast if DB is unreachable
-    });
+    await mongoose.connect(MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
     // Start server only after DB connects
