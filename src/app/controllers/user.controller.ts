@@ -60,7 +60,7 @@ const validateUser=async(req:Request, res:Response)=>{
     // const userId = req.params.id; // set by authenticateToken middleware
     const refreshToken=req.cookies.refreshToken
     console.log(refreshToken)
-      const verifiedRefreshToken = verifyToken(refreshToken, "secretrefresh") as JwtPayload
+      const verifiedRefreshToken = verifyToken(refreshToken, "secretrefresh") 
   console.log(verifiedRefreshToken)
 
     const isUserExist = await User.findOne({ email: verifiedRefreshToken.email , _id: verifiedRefreshToken.userId })
