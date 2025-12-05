@@ -61,16 +61,14 @@ const credentialLogin = async (req: Request, res: Response) => {
 
 const logout=async (req: Request, res: Response)=>{
 
-      res.clearCookie("accessToken", {
+      const cookieOptions = {
         httpOnly: true,
-        secure: true,
-        sameSite: "none"
-    })
-    res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none"
-    })
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+      };
+
+      res.clearCookie("accessToken", cookieOptions);
+      res.clearCookie("refreshToken", cookieOptions);
 
     return res.status(200).json({ message: "Logged out successfully" });
 }
