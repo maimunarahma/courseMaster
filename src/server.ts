@@ -8,7 +8,10 @@ let server: Server;
 
 const startServer = async () => {
   try {
-    const MONGO_URI = process.env.MONGODB_URI!;
+    const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI;
+    if (!MONGO_URI) {
+      throw new Error('MONGODB_URI environment variable is required');
+    }
     await connectDB(MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
@@ -31,4 +34,10 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// Only start a listening server when NOT running on Vercel serverless environment
+if (!process.env.VERCEL) {
+  startServer();
+} else {
+  // In Vercel we expose the app via the serverless function at /api
+  console.log('Running on Vercel - serverless mode, not starting HTTP listener');
+}
