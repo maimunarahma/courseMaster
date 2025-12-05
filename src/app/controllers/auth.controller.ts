@@ -35,14 +35,14 @@ const credentialLogin = async (req: Request, res: Response) => {
     const accessToken = generateToken(payload, process.env.JWT_SECRET || "secret", "1d");
     const refreshToken = generateToken(payload, process.env.JWT_REFRESH_SECRET || "secretrefresh", "30d");
 
-    // Set refresh token cookie
-  res.cookie("refreshToken", refreshToken, {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-  maxAge: 30*24*60*60*1000,
-});
-
+    // Set refresh token cookie with proper configuration
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      path: "/", // Ensure cookie is available for all paths
+    });
 
     return res.status(200).json({
       message: "Login successful",
@@ -59,17 +59,17 @@ const credentialLogin = async (req: Request, res: Response) => {
   }
 };
 
-const logout=async (req: Request, res: Response)=>{
+const logout = async (req: Request, res: Response) => {
+  const cookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+    path: "/", // Must match the path used when setting the cookie
+  };
 
-      const cookieOptions = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
-      };
+  res.clearCookie("refreshToken", cookieOptions);
 
-      res.clearCookie("accessToken", cookieOptions);
-      res.clearCookie("refreshToken", cookieOptions);
+  return res.status(200).json({ message: "Logged out successfully" });
+};
 
-    return res.status(200).json({ message: "Logged out successfully" });
-}
-export const authController = { credentialLogin ,logout };
+export const authController = { credentialLogin, logout };
