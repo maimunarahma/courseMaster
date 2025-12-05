@@ -38,7 +38,7 @@ const credentialLogin = async (req: Request, res: Response) => {
     // Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production
+      secure: true, // true in production
       sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
@@ -62,13 +62,13 @@ const logout=async (req: Request, res: Response)=>{
 
       res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     })
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "none"
     })
 
     return res.status(200).json({ message: "Logged out successfully" });
