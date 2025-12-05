@@ -1,26 +1,22 @@
-import express from "express";
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
+import { connectDB } from "./app/lib/db";
+import 'dotenv/config';
 
 let server: Server;
 
 const startServer = async () => {
-  const MONGO_URI = process.env.MONGODB_URI || 
-    'mongodb+srv://courseUser:p07lSW9UcZ6tkyX9@cluster0.2h2ve40.mongodb.net/courseMaster?appName=Cluster0';
-
   try {
-    // Connect to MongoDB
-    await mongoose.connect(MONGO_URI);
+    const MONGO_URI = process.env.MONGODB_URI!;
+    await connectDB(MONGO_URI);
     console.log("✅ Connected to MongoDB");
 
-    // Start server only after DB connects
     const PORT = process.env.PORT || 5000;
     server = app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
 
-    // Optional: handle graceful shutdown
     process.on("SIGINT", async () => {
       console.log("Closing server...");
       await mongoose.disconnect();
@@ -29,9 +25,9 @@ const startServer = async () => {
         process.exit(0);
       });
     });
-  } catch (error) {
-    console.error("❌ MongoDB connection error:", error);
-    process.exit(1); // exit if DB connection fails
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
   }
 };
 
