@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app";
 import { connectDB } from "./app/lib/db";
-import 'dotenv/config';
+
 
 let server: Server;
 
@@ -20,17 +21,10 @@ const startServer = async () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
 
-    process.on("SIGINT", async () => {
-      console.log("Closing server...");
-      await mongoose.disconnect();
-      server.close(() => {
-        console.log("Server closed");
-        process.exit(0);
-      });
-    });
+  
   } catch (err) {
     console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
+    // process.exit(1);
   }
 };
 
