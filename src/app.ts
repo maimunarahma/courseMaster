@@ -13,8 +13,11 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:8080",
+  "https://course-master-frontend-mu.vercel.app",
   "https://courseflow-platform.vercel.app",
 ];
+console.log("ENV:", process.env.NODE_ENV);
+
 
 app.use(
   cors({
