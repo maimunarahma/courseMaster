@@ -71,18 +71,12 @@ const validateUser = async (req: Request, res: Response) => {
     const verifiedRefreshToken = verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET || "secretrefresh");
     console.log(verifiedRefreshToken);
 
-    const isUserExist = await User.findOne({
-      email: verifiedRefreshToken.email,
-      _id: verifiedRefreshToken.userId,
-    });
+    const isUserExist = await User.findById(verifiedRefreshToken.userId);
 
     if (!isUserExist) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(404).json({ message: "user not found" });
     }
 
-    const user = await User.findById({ _id: verifiedRefreshToken.userId });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    
     res.json({ success: true, data: user });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
