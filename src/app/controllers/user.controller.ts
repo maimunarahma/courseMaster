@@ -50,7 +50,7 @@ const registerUser = async (req: Request, res: Response) => {
         email: newUser.email,
         role: newUser.role,
         accessToken,
-        // DO NOT send refreshToken in response body
+     refreshToken
       },
     });
   } catch (error) {

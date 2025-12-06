@@ -51,6 +51,7 @@ const credentialLogin = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         accessToken,
+        refreshToken
       },
     });
   } catch (err) {
