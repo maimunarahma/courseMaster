@@ -52,7 +52,7 @@ const enrollCourse = async (req: Request, res: Response) => {
     try {
         // 1. Get and Verify Token (Authentication)
         const token = req.cookies.refreshToken;
-
+  console.log(token)
         if (!token) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }

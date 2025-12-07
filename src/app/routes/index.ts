@@ -38,3 +38,21 @@ const moduleROutes= [
 moduleROutes.forEach((route)=>{
      router.use(route.path, route.route)
 })
+
+// Debug endpoint to inspect cookies and origin (temporary)
+router.get('/debug/cookies', (req, res) => {
+     try {
+          return res.json({
+               success: true,
+               cookies: req.cookies,
+               origin: req.headers.origin,
+               headers: {
+                    cookie: req.headers.cookie,
+                    origin: req.headers.origin,
+                    referer: req.headers.referer,
+               },
+          });
+     } catch (err: any) {
+          return res.status(500).json({ success: false, message: err.message });
+     }
+});

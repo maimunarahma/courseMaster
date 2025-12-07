@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
+import { IUser, User } from "../models/user.model";
 import { generateToken } from "../utils/jwt";
 import bcrypt from "bcryptjs";
 
@@ -26,8 +26,8 @@ const credentialLogin = async (req: Request, res: Response) => {
     }
 
     // Create JWT payload
-    const payload: LoginPayload = {
-      userId: user._id.toString(),
+    const payload = {
+      userId: user._id,
       email: user.email,
       role: user.role,
     };

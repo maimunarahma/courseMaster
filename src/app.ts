@@ -15,8 +15,10 @@ const allowedOrigins = [
   "http://localhost:8080",
   "https://course-master-frontend-mu.vercel.app",
   "https://courseflow-platform.vercel.app",
-];
-console.log("ENV:", process.env.NODE_ENV);
+  process.env.FRONTEND_URL,
+].filter(Boolean) as string[];
+
+console.log("ENV:", process.env.NODE_ENV, "ALLOWED_ORIGINS:", allowedOrigins);
 
 
 app.use(
