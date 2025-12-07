@@ -70,7 +70,7 @@ const logout = async (req: Request, res: Response) => {
 
   res.clearCookie("refreshToken", cookieOptions);
 
-  return res.status(200).json({ message: "Logged out successfully" });
+  return res.status(200).json({ message: "Logged out successfully" , user: null});
 };
 
 export const authController = { credentialLogin, logout };

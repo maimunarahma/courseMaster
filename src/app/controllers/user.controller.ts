@@ -77,7 +77,7 @@ const validateUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "user not found" });
     }
 
-    res.json({ success: true, data: isUserExist });
+    res.json({ success: true, user: isUserExist });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server error" });
   }
