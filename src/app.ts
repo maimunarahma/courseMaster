@@ -37,7 +37,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/v1", router);
+app.use("/", router);
 
 // Base route
 app.get("/", (_req: express.Request, res: express.Response) => {
