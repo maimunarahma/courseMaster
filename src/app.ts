@@ -11,7 +11,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 const allowedOrigins = [
-  "http://localhost:5173",
+  "http://localhost:3000",
   "http://localhost:8080",
   "https://course-master-frontend-mu.vercel.app",
   "https://courseflow-platform.vercel.app",
