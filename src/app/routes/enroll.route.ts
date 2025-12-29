@@ -5,6 +5,8 @@ const router = Router();
 
 
 router.get("/", enrollmentController.getEnrolledCourses);
+router.get("/:id", enrollmentController.getEnrolledCourses);
 router.post("/:id", enrollmentController.enrollCourse);
+router.get('/check/:id', enrollmentController.isEnrolled);
 
 export const enrollRoutes = router;

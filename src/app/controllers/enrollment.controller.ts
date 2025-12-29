@@ -8,7 +8,7 @@ const getEnrolledCourses = async (req: Request, res: Response) => {
     try {
         const token = req.cookies.refreshToken;
 
-        if (!token) {
+        if (!token){
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
         
@@ -48,6 +48,7 @@ const getEnrolledCourses = async (req: Request, res: Response) => {
     }
 };
 
+
 const enrollCourse = async (req: Request, res: Response) => {
     try {
         // 1. Get and Verify Token (Authentication)
@@ -78,6 +79,7 @@ const enrollCourse = async (req: Request, res: Response) => {
     course: courseId // The course's ID
 });
           
+console.log(isExist)
 if(isExist){
     return res.status(404).json({ message: "User already enrolled." });
 }
@@ -104,4 +106,26 @@ if(isExist){
         });
     }
 };
-export const enrollmentController =  { getEnrolledCourses ,enrollCourse };
+
+// GET route to check enrollment status
+const isEnrolled = async (req: Request, res: Response) => {
+    try {
+        const token = req.cookies.refreshToken;
+        const userData = verifyToken(token, "secretrefresh") as { userId: string };
+        const courseId = req.params.id;
+
+        const isExist = await Enrollment.findOne({
+            user: userData.userId,
+            course: courseId
+        });
+        console.log("isEnrolledExist", isExist)
+   if(isExist)
+        return res.status(200).json({ isEnrolled: true });
+
+    return res.status(200).json({ isEnrolled: false });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Error checking enrollment" });
+    }
+}
+export const enrollmentController =  { getEnrolledCourses ,enrollCourse ,isEnrolled };
