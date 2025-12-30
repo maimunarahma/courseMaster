@@ -36,13 +36,15 @@ const credentialLogin = async (req: Request, res: Response) => {
     const refreshToken = generateToken(payload, process.env.JWT_REFRESH_SECRET || "secretrefresh", "30d");
 
     // Set refresh token cookie with proper configuration
-    res.cookie("refreshToken", refreshToken, {
+    const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // true in production
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-      path: "/", // Ensure cookie is available for all paths
-    });
+      path: "/",
+    };
+
+    res.cookie("refreshToken", refreshToken, cookieOptions);
 
     return res.status(200).json({
       message: "Login successful",
