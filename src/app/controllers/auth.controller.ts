@@ -35,11 +35,12 @@ const credentialLogin = async (req: Request, res: Response) => {
     const accessToken = generateToken(payload, process.env.JWT_SECRET || "secret", "1d");
     const refreshToken = generateToken(payload, process.env.JWT_REFRESH_SECRET || "secretrefresh", "30d");
 
-    // Set refresh token cookie with proper configuration
+    // Cookie configuration that works in both dev and production
+    const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+      secure: isProduction,
+      sameSite: isProduction ? "none" as const : "lax" as const,
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
       path: "/",
     };
@@ -53,7 +54,6 @@ const credentialLogin = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         accessToken,
-        refreshToken
       },
     });
   } catch (err) {
@@ -64,10 +64,12 @@ const credentialLogin = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
   try {
+    // Match the same cookie configuration as login
+    const isProduction = process.env.NODE_ENV === "production";
     const cookieOptions = {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+      secure: isProduction,
+      sameSite: isProduction ? "none" as const : "lax" as const,
       path: "/",
     };
 
