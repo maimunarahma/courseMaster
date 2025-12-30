@@ -61,16 +61,24 @@ const credentialLogin = async (req: Request, res: Response) => {
 };
 
 const logout = async (req: Request, res: Response) => {
-  const cookieOptions = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
-    path: "/", // Must match the path used when setting the cookie
-  };
+  try {
+    const cookieOptions = {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" as const : "lax" as const,
+      path: "/",
+    };
 
-  res.clearCookie("refreshToken", cookieOptions);
+    res.clearCookie("refreshToken", cookieOptions);
 
-  return res.status(200).json({ message: "Logged out successfully" , user: null});
+    return res.status(200).json({ 
+      message: "Logged out successfully", 
+      success: true 
+    });
+  } catch (err) {
+    console.error("Logout error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const authController = { credentialLogin, logout };

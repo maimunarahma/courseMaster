@@ -6,10 +6,6 @@ import { router } from "./app/routes";
 
 const app = express();
 
-// Middlewares
-app.use(cookieParser());
-app.use(express.json());
-
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:8080",
@@ -20,7 +16,7 @@ const allowedOrigins = [
 
 console.log("ENV:", process.env.NODE_ENV, "ALLOWED_ORIGINS:", allowedOrigins);
 
-
+// CORS must be first to handle preflight requests
 app.use(
   cors({
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
@@ -35,6 +31,10 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// Middlewares (after CORS)
+app.use(cookieParser());
+app.use(express.json());
 
 // Routes
 app.use("/", router);
