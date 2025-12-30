@@ -63,7 +63,9 @@ const generateQuiz = async (req : Request, res : Response) => {
     const aiResponse = await callGemini(prompt);
     console.log("AI Response received:", aiResponse);
 
-    const quiz = extractJSON(aiResponse);
+    
+    const quiz =await extractJSON(aiResponse);
+
 
     res.json({
       success: true,

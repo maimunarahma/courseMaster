@@ -4,29 +4,26 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export const callGemini = async (prompt: string): Promise<string> => {
   try {
-    console.log("Calling Gemini API with prompt length:", prompt.length);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000); // 20s
 
     const response = await ai.models.generateContent({
       model: "gemini-flash-latest",
-      contents : 
-         prompt
-        
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      signal: controller.signal,
     });
 
-    console.log("Gemini API Response received");
+    clearTimeout(timeout);
 
-    const text = response.text;
-    
-    if (!text) {
-      console.error("No text in Gemini response");
-      throw new Error("No text generated from Gemini API");
-    }
+    const text = response?.candidates?.[0]?.content?.parts
+      ?.map((p: any) => p.text)
+      .join("") || "";
+
+    if (!text) throw new Error("Empty response from Gemini API");
 
     return text;
   } catch (err: any) {
-    console.error("Error calling Gemini API:");
-    console.error("Error Message:", err.message);
-    console.error("Error Details:", err);
+    console.error("Gemini API error:", err);
     throw new Error(`Failed to call Gemini API: ${err.message}`);
   }
 };
