@@ -1,14 +1,16 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
 
 export const callGemini = async (prompt: string): Promise<string> => {
   try {
     console.log("Calling Gemini API with prompt length:", prompt.length);
 
-    const response = await ai.getGenerativeModel({
+    const response = await ai.models.generateContent({
       model: "gemini-flash-latest",
-      
+      contents : 
+         prompt
+        
     });
 
     console.log("Gemini API Response received");
