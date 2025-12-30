@@ -103,7 +103,7 @@ const submitAssignment = async (req: Request, res: Response) => {
     }
 };
 
-// ========================
+
 // ========================
 // Get All Submissions (Admin)
 // ========================
