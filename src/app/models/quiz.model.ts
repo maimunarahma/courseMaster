@@ -3,17 +3,15 @@ import mongoose from 'mongoose';
 // --- Embedded Question Schema ---
 const QuestionSchema = new mongoose.Schema({
     // Unique ID for the question within the quiz (useful for front-end keys)
-    id: { 
+  
+    question: { 
         type: String, 
-        required: true 
-    },
-    text: { 
-        type: String, 
-        required: true 
+        // required: true 
     },
     // Array of possible answers
     options: { 
-        type: [String], 
+        type: Map, 
+        of: String,
         required: true 
     },
     // The specific correct answer value
@@ -43,14 +41,6 @@ const QuizSchema = new mongoose.Schema({
     questions: { 
         type: [QuestionSchema], 
         required: true 
-    },
-    
-    // Minimum score (as a percentage) required to pass the quiz
-    passingScore: { 
-        type: Number, 
-        required: true, 
-        min: 0, 
-        max: 100 
     },
     
     // Optional: Time limit for the assessment
