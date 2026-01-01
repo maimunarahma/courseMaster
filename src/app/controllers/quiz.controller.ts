@@ -4,6 +4,7 @@ import { Quiz } from '../models/quiz.model';
 import { quizPrompt } from '../../ai/geminiTemplates';
 import { callGemini } from '../../ai/geminiClient';
 import { Course } from '../models/course.model';
+import { Enrollment, Enrollment as enrollments } from '../models/enrollment.model';
 
 const extractJSON=(text : string)=> {
   // Remove ```json and ``` if present
@@ -118,6 +119,7 @@ const generateQuiz = async (req : Request, res : Response) => {
     });
   }
 };
+
 
 export const quizController = { getQuizzesByCourse, getQuizById, generateQuiz };
 

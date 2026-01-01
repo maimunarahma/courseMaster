@@ -48,6 +48,29 @@ const getEnrolledCourses = async (req: Request, res: Response) => {
     }
 };
 
+const getEnrolledCOurseByCourseId = async (req: Request, res: Response) => {
+     try {
+        const token = req.cookies.refreshToken;
+        if (!token){
+            return res.status(401).json({ message: "Unauthorized: No token provided" });
+        }
+        const userData = verifyToken(token , "secretrefresh" )
+        const userId = userData.userId;
+        const courseId = req.params.id;
+        const enrolledRecord = await Enrollment.findOne({ user: userId , course : courseId})
+        if (!enrolledRecord) {
+            return res.status(404).json({ message: "No enrollment record found for this course." });
+
+     }
+        return res.status(200).json({ success: true, data: enrolledRecord });
+     
+     
+     
+    }catch (error) {
+        console.log(error)
+        return res.status(500).json({ message: "Error fetching enrollment record." });
+     }
+    }
 
 const enrollCourse = async (req: Request, res: Response) => {
     try {
@@ -128,4 +151,27 @@ const isEnrolled = async (req: Request, res: Response) => {
         return res.status(500).json({ message: "Error checking enrollment" });
     }
 }
-export const enrollmentController =  { getEnrolledCourses ,enrollCourse ,isEnrolled };
+  const progressCounter = async (req : Request, res : Response) => {
+    try {
+      const { courseId , userId } = req.params
+      const { progress} = req.body
+      const enrollments = await Enrollment.findOne({ course: courseId, user: userId });
+      if(!enrollments){
+        return res.status(404).json({ success: false, message: "Enrollment not found" });
+      }
+      const newProgress =  await enrollments.updateOne( 
+        { course: courseId, user: userId },
+        { $inc: { progress } }
+      );
+      await enrollments.save();
+      return res.status(200).json({ success: true, newProgress });
+
+
+      
+    } catch (error) {
+       console.log(error)
+      return res.status(500).json({ success: false, message: "Internal server error" });
+    }
+
+  }
+export const enrollmentController =  { getEnrolledCourses ,enrollCourse ,isEnrolled  , progressCounter};

@@ -21,6 +21,34 @@ const QuestionSchema = new mongoose.Schema({
     }
 });
 
+interface IParticipatents{
+    userId: { type: mongoose.Types.ObjectId , ref: 'User' },
+    mark: { type : Number , default : 0 },
+    duration : { type : TimeRanges , default : 0.00 },
+    attempted : { type : Number , default : 0 }
+
+}
+
+// --- Participants Schema ---
+const ParticipantsSchema = new mongoose.Schema({
+    userId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User' 
+    },
+    mark: { 
+        type: Number, 
+        default: 0 
+    },
+    duration: { 
+        type: Number, 
+        default: 0.00 
+    },
+    attempted: { 
+        type: Number, 
+        default: 0 
+    }
+});
+
 // --- Main Quiz Schema ---
 const QuizSchema = new mongoose.Schema({
     
@@ -48,6 +76,7 @@ const QuizSchema = new mongoose.Schema({
         type: Number, 
         default: 30 
     },
+    participatents: [ParticipantsSchema]
 
 }, { timestamps: true });
 

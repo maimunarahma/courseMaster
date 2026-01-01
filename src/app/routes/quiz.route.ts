@@ -7,6 +7,7 @@ const router = Router();
 
 router.get("/:courseId", quizController.getQuizzesByCourse)
 router.post("/generate/:courseId", quizController.generateQuiz)
+
 // router.post("/submit", quizController.enrollCourse)
 
 export const quizRoutes = router;

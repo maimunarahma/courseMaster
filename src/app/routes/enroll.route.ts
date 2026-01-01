@@ -8,5 +8,6 @@ router.get("/", enrollmentController.getEnrolledCourses);
 router.get("/:id", enrollmentController.getEnrolledCourses);
 router.post("/:id", enrollmentController.enrollCourse);
 router.get('/check/:id', enrollmentController.isEnrolled);
+router.patch('/:id/progress/:userId', enrollmentController.progressCounter);
 
 export const enrollRoutes = router;
