@@ -153,7 +153,11 @@ const isEnrolled = async (req: Request, res: Response) => {
 }
   const progressCounter = async (req : Request, res : Response) => {
     try {
-      const { courseId , userId } = req.params
+      const { courseId  } = req.params
+      const token = req.cookies.refreshToken;
+        const userData = verifyToken(token , process.env.JWT_REFRESH_SECRET as string) as { userId: string };
+        const userId = userData.userId;
+        
       const { progress} = req.body
       const enrollments = await Enrollment.findOne({ course: courseId, user: userId });
       if(!enrollments){
