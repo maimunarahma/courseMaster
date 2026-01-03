@@ -42,21 +42,21 @@ const createCourse = async (req: Request, res: Response) => {
         }
         const userData = verifyToken(token, "secretrefresh") as { userId: string; email: string; role: string };
         console.log("user data", userData)
-        verifyRole(userData.role, "admin");
-        if (verifyRole(userData.role, "admin") === false) {
-            return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
+        if (verifyRole(userData.role, Role.INSTRUCTOR) === false && verifyRole(userData.role, Role.ADMIN) === false){
+                    return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
         }
 
-        const { title, description, instructor, category, price, thumbnail, lessons, batch } = req.body;
+        const { title, description , category, courseDuration , courseLevel , courseOverview , price, thumbnail  } = req.body;
+        console.log("course datas", title, description , category, courseDuration , courseLevel , courseOverview , price, thumbnail )
         const validateCourse = courseValidationSchema.parse({
             title,
             description,
-            instructor,
+            courseLevel,
+            courseDuration,
+            courseOverview,
             category,
             price,
-            thumbnail,
-            lessons,
-            batch
+            thumbnail
         })
         console.log("validate course", validateCourse)
         const newCourse = new Course(validateCourse);
@@ -78,7 +78,7 @@ const updateCourse = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
         const userData = verifyToken(token, "secretrefresh") as { userId: string; email: string; role: string };
-         if (verifyRole(userData.role, "admin") === false) {
+         if (verifyRole(userData.role, Role.INSTRUCTOR) === false && verifyRole(userData.role, Role.ADMIN) === false) {
             return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
         }  
         const { title, description, instructor, category, price, thumbnail, lessons, batch } = req.body;
@@ -92,7 +92,6 @@ const updateCourse = async (req: Request, res: Response) => {
                 price,
                 thumbnail,
                 lessons,
-
                 batch
             },
             { new: true }
