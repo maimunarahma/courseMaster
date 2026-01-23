@@ -2,9 +2,7 @@ import mongoose from "mongoose";
 import { z } from "zod";
 
 
-export const objectIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, {
-  message: "Invalid ObjectId format",
-});
+// 
 
 export const courseValidationSchema = z.object({
   title: z.string().min(1, { message: "Title is required and cannot be empty" }),

@@ -62,12 +62,13 @@ const createCourse = async (req: Request, res: Response) => {
         console.log("validate course", validateCourse)
         const newCourse = new Course(validateCourse);
         await newCourse.save();
+      
         return res.status(201).json(newCourse);
     } catch (error) {
         if (error instanceof z.ZodError) {
             return res.status(400).json({ 
                 message: "Validation Error",
-                errors: error.errors.map(err => ({
+                errors: error?.issues?.map(err => ({
                     field: err.path.join('.'),
                     message: err.message
                 }))
