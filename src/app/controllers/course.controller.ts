@@ -49,31 +49,28 @@ const createCourse = async (req: Request, res: Response) => {
 
         const { title, description , category, courseDuration , courseLevel  , price } = req.body;
         console.log("course datas", title, description , category, courseDuration , courseLevel ,  price  )
-        const validateCourse = courseValidationSchema.parse({
-            title,
-            description,
-            courseLevel,
-            courseDuration,
-            category,
-            price,
+        const validateCourse = courseValidationSchema.safeParse({
+             ...req.body,
             instructor: userData.userId,
 
         })
+        if (!validateCourse.success) {
+      return res.status(400).json({
+        message: "Validation Error",
+        errors: validateCourse.error.issues.map(err => ({
+          field: err.path.join("."),
+          message: err.message,
+        })),
+      });
+    }
+
         console.log("validate course", validateCourse)
-        const newCourse = new Course(validateCourse);
+        const newCourse = new Course(validateCourse.data);
         await newCourse.save();
       
         return res.status(201).json(newCourse);
     } catch (error) {
-        if (error instanceof z.ZodError) {
-            return res.status(400).json({ 
-                message: "Validation Error",
-                errors: error?.issues?.map(err => ({
-                    field: err.path.join('.'),
-                    message: err.message
-                }))
-            });
-        }
+        
         console.log(error)
         return res.status(500).json({ message: "Internal Server Error" });
     }
