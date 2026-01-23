@@ -6,6 +6,7 @@ import { verifyToken } from "../utils/jwt";
 import { verifyRole } from "../../middlewares/verifyRole";
 import { Role } from "../models/user.model";
 import { Enrollment } from "../models/enrollment.model";
+import { z } from "zod";
 const allCourses = async (req: Request, res: Response) => {
     try {
         const courses = await Course.find();
@@ -54,7 +55,8 @@ const createCourse = async (req: Request, res: Response) => {
             courseLevel,
             courseDuration,
             category,
-            price
+            price,
+            instructor: userData.userId,
 
         })
         console.log("validate course", validateCourse)
@@ -62,6 +64,15 @@ const createCourse = async (req: Request, res: Response) => {
         await newCourse.save();
         return res.status(201).json(newCourse);
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ 
+                message: "Validation Error",
+                errors: error.errors.map(err => ({
+                    field: err.path.join('.'),
+                    message: err.message
+                }))
+            });
+        }
         console.log(error)
         return res.status(500).json({ message: "Internal Server Error" });
     }
