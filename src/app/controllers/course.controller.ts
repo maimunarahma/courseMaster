@@ -46,17 +46,16 @@ const createCourse = async (req: Request, res: Response) => {
                     return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
         }
 
-        const { title, description , category, courseDuration , courseLevel , courseOverview , price, thumbnail  } = req.body;
-        console.log("course datas", title, description , category, courseDuration , courseLevel , courseOverview , price, thumbnail )
+        const { title, description , category, courseDuration , courseLevel  , price } = req.body;
+        console.log("course datas", title, description , category, courseDuration , courseLevel ,  price  )
         const validateCourse = courseValidationSchema.parse({
             title,
             description,
             courseLevel,
             courseDuration,
-            courseOverview,
             category,
-            price,
-            thumbnail
+            price
+
         })
         console.log("validate course", validateCourse)
         const newCourse = new Course(validateCourse);

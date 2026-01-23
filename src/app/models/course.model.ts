@@ -23,12 +23,12 @@ import { fa } from "zod/v4/locales";
   }
 const courseSchema = new mongoose.Schema({
   title: { type: String, required: true, index: "text" },
-  description: String,
+  description: { type:String, required: true , message : "Description is required" },
   instructorId: { type: mongoose.Schema.Types.ObjectId, ref : "User"},
-  category: { type: String, enum: Object.values(Category), index: true },
-  price: Number,
-  courseDuration: { type: Number, required: true }, 
-  courseLevel: { type: String, enum: Object.values(Level), required: true },
+  category: { type: String, enum: Object.values(Category), index: true , required: true , message : "Invalid category" },
+  price: { type: Number, required: true , default: 0 , message : "Price is required and must be a positive number" },
+  courseDuration: { type: Number, required: true  , message : "Course duration is required" }, 
+  courseLevel: { type: String, enum: Object.values(Level), required: true , message : "Invalid level" },
   courseOverview: { type: String },
    courseRequirements: { type: [String] },
    courseObjectives: { type: [String] },
