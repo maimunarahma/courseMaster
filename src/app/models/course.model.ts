@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { fa } from "zod/v4/locales";
-import { lessonSchema } from "./lesson.model";
+import { lessonSchema, moduleSchema } from "./lesson.model";
 
 
 
@@ -34,7 +34,7 @@ const courseSchema = new mongoose.Schema({
    courseRequirements: { type: [String] },
    courseObjectives: { type: [String] },
   thumbnail: { type: String, required: false},
-  lessons: [lessonSchema],
+  lessons: [moduleSchema],
  
   batch: { type: Number, ref: "Batch" , required: false}
 }, { timestamps: true });

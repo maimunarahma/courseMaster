@@ -1,17 +1,11 @@
 import mongoose from "mongoose";
 
-export const lessonSchema = new mongoose.Schema({
-  course: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
-  module: [{
-    type: mongoose.Schema.Types.ObjectId,
-    title: String,
-    ref: "Module",
-     videoUrl: String,
-     assignment: { type: mongoose.Schema.Types.ObjectId, ref: "Assignment" },
-     quiz: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }
-  }],
- 
+export const moduleSchema = new mongoose.Schema({
+  title: { type: String },
+  videoUrl: { type: String },
+  assignment: { type: mongoose.Schema.Types.ObjectId, ref: "Assignment" },
+  quiz: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }
+}, { _id: true });
 
-});
 
-export const Lesson = mongoose.model("Lesson", lessonSchema);
+export const Module = mongoose.model("Module", moduleSchema);

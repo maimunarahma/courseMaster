@@ -1,8 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const apiKey = process.env.GEMINI_API_KEY || "";
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const callGemini = async (prompt: string): Promise<string> => {
+  if (!ai || !apiKey) {
+    console.warn("Gemini API key not configured - skipping AI generation");
+    return "AI generation is not available. Please set GEMINI_API_KEY environment variable.";
+  }
+  
   try {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 20000); // 20s

@@ -5,5 +5,6 @@ export const verifyRole = (userRole: string, requiredRole: string) => {
   
 
   }
+  else return true;
 };
 

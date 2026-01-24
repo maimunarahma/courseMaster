@@ -190,5 +190,6 @@ const isEnrolled = async (req: Request, res: Response) => {
       console.error("Progress update error:", error);
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
+
   }
 export const enrollmentController =  { getEnrolledCourses ,getEnrolledCOurseByCourseId ,enrollCourse ,isEnrolled  , progressCounter};

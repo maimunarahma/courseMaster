@@ -80,44 +80,82 @@ const createCourse = async (req: Request, res: Response) => {
 const updateCourse = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const token = req.cookies.refreshToken
+        const token = req.cookies.refreshToken;
 
         if (!token) {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
+        
         const userData = verifyToken(token, "secretrefresh") as { userId: string; email: string; role: string };
-         if ( verifyRole(userData.role, Role.INSTRUCTOR) === false && verifyRole(userData.role, Role.ADMIN) === false) {
+        
+        const isAdmin = verifyRole(userData.role, Role.ADMIN);
+        const isInstructor = verifyRole(userData.role, Role.INSTRUCTOR);
+        
+        if (isAdmin!==true && isInstructor!==true) {
             return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
-        }  
+        }
+        
         const courseToUpdate = await Course.findById(id);
-        if(!courseToUpdate){
+        if (!courseToUpdate) {
             return res.status(404).json({ message: "Course not found" });
         }
-        if ((verifyRole(userData.role, Role.INSTRUCTOR) !== false && userData.userId !== courseToUpdate.instructorId?.toString()) ) {
+        
+        // Instructors can only update their own courses, admins can update any
+        if (isInstructor && !isAdmin && userData.userId !== courseToUpdate.instructorId?.toString()) {
             return res.status(403).json({ message: "Forbidden: You can only update your own courses" });
         }
-        const { title, description, instructor, category, price, thumbnail, lessons, batch } = req.body;
+        
+        // Build update object with only provided fields
+        const updateData: any = {};
+        
+        if (req.body.title !== undefined) updateData.title = req.body.title;
+        if (req.body.description !== undefined) updateData.description = req.body.description;
+        if (req.body.category !== undefined) updateData.category = req.body.category;
+        if (req.body.price !== undefined) updateData.price = req.body.price;
+        if (req.body.thumbnail !== undefined) updateData.thumbnail = req.body.thumbnail;
+        if (req.body.batch !== undefined) updateData.batch = req.body.batch;
+        if (req.body.courseDuration !== undefined) updateData.courseDuration = req.body.courseDuration;
+        if (req.body.courseLevel !== undefined) updateData.courseLevel = req.body.courseLevel;
+        if (req.body.courseOverview !== undefined) updateData.courseOverview = req.body.courseOverview;
+        if (req.body.courseRequirements !== undefined) updateData.courseRequirements = req.body.courseRequirements;
+        if (req.body.courseObjectives !== undefined) updateData.courseObjectives = req.body.courseObjectives;
+        
+        // Handle lessons - wrap in array if needed
+        if (req.body.lessons !== undefined) {
+            console.log("Raw lessons input:", JSON.stringify(req.body.lessons, null, 2));
+            updateData.lessons = Array.isArray(req.body.lessons.module) ? req.body.lessons.module : [req.body.lessons.module];
+            console.log("Processed lessons:", JSON.stringify(updateData.lessons, null, 2));
+        }
+        
+        console.log("Full update data:", JSON.stringify(updateData, null, 2));
+        
         const updatedCourse = await Course.findByIdAndUpdate(
             id,
-            {
-                title,
-                description,
-                instructor,
-                category,
-                price,
-                thumbnail,
-                lessons,
-                batch
-            },
-            { new: true }
+            updateData,
+            { new: true, runValidators: true }
         );
+        
+        console.log("Updated course result:", updatedCourse ? "Success" : "Failed");
+        if (updatedCourse?.lessons) {
+            console.log("Lessons saved:", JSON.stringify(updatedCourse.lessons, null, 2));
+        }
+        
         if (!updatedCourse) {
             return res.status(404).json({ message: "Course not found" });
         }
-        return res.status(200).json(updatedCourse);
+        
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully",
+            data: updatedCourse
+        });
 
-    } catch (error) {
-        return res.status(500).json({ message: "Internal Server Error" });
+    } catch (error: any) {
+        console.error("Update course error:", error);
+        return res.status(500).json({ 
+            message: "Internal Server Error",
+            error: error.message
+        });
     }
 }
 
