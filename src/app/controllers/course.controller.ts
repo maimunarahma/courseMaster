@@ -51,7 +51,7 @@ const createCourse = async (req: Request, res: Response) => {
         console.log("course datas", title, description , category, courseDuration , courseLevel ,  price  )
         const validateCourse = courseValidationSchema.safeParse({
              ...req.body,
-            instructor: userData.userId,
+            instructorId: userData.userId,
 
         })
         if (!validateCourse.success) {
@@ -86,9 +86,16 @@ const updateCourse = async (req: Request, res: Response) => {
             return res.status(401).json({ message: "Unauthorized: No token provided" });
         }
         const userData = verifyToken(token, "secretrefresh") as { userId: string; email: string; role: string };
-         if (verifyRole(userData.role, Role.INSTRUCTOR) === false && verifyRole(userData.role, Role.ADMIN) === false) {
+         if ( verifyRole(userData.role, Role.INSTRUCTOR) === false && verifyRole(userData.role, Role.ADMIN) === false) {
             return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
         }  
+        const courseToUpdate = await Course.findById(id);
+        if(!courseToUpdate){
+            return res.status(404).json({ message: "Course not found" });
+        }
+        if ((verifyRole(userData.role, Role.INSTRUCTOR) !== false && userData.userId !== courseToUpdate.instructorId?.toString()) ) {
+            return res.status(403).json({ message: "Forbidden: You can only update your own courses" });
+        }
         const { title, description, instructor, category, price, thumbnail, lessons, batch } = req.body;
         const updatedCourse = await Course.findByIdAndUpdate(
             id,
