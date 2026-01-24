@@ -5,7 +5,7 @@ const router = Router();
 
 
 router.get("/", enrollmentController.getEnrolledCourses);
-router.get("/:id", enrollmentController.getEnrolledCourses);
+router.get("/:id", enrollmentController.getEnrolledCOurseByCourseId);
 router.post("/:id", enrollmentController.enrollCourse);
 router.get('/check/:id', enrollmentController.isEnrolled);
 router.patch('/:id/progress', enrollmentController.progressCounter);

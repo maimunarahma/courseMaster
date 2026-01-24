@@ -153,29 +153,42 @@ const isEnrolled = async (req: Request, res: Response) => {
 }
   const progressCounter = async (req : Request, res : Response) => {
     try {
-      const { courseId  } = req.params
+      const courseId = req.params.id;  // Fixed: route uses :id not :courseId
       const token = req.cookies.refreshToken;
-        const userData = verifyToken(token , process.env.JWT_REFRESH_SECRET as string) as { userId: string };
-        const userId = userData.userId;
-        
-      const { progress} = req.body
-      const enrollments = await Enrollment.findOne({ course: courseId, user: userId });
-      if(!enrollments){
+      
+      if (!token) {
+        return res.status(401).json({ success: false, message: "Unauthorized: No token provided" });
+      }
+      
+      const userData = verifyToken(token, process.env.JWT_REFRESH_SECRET || "secretrefresh") as { userId: string };
+      const userId = userData.userId;
+      
+      const { progress } = req.body;
+      
+      if (progress === undefined || progress === null) {
+        return res.status(400).json({ success: false, message: "Progress value is required" });
+      }
+      
+      // Find and update the enrollment in one operation
+      const updatedEnrollment = await Enrollment.findOneAndUpdate(
+        { course: courseId, user: userId },
+        { $inc: { progress } },
+        { new: true }  // Return the updated document
+      );
+      
+      if (!updatedEnrollment) {
         return res.status(404).json({ success: false, message: "Enrollment not found" });
       }
-      const newProgress =  await enrollments.updateOne( 
-        { course: courseId, user: userId },
-        { $inc: { progress } }
-      );
-      await enrollments.save();
-      return res.status(200).json({ success: true, newProgress });
-
-
+      
+      return res.status(200).json({ 
+        success: true, 
+        message: "Progress updated successfully",
+        data: updatedEnrollment 
+      });
       
     } catch (error) {
-       console.log(error)
+      console.error("Progress update error:", error);
       return res.status(500).json({ success: false, message: "Internal server error" });
     }
-
   }
-export const enrollmentController =  { getEnrolledCourses ,enrollCourse ,isEnrolled  , progressCounter};
+export const enrollmentController =  { getEnrolledCourses ,getEnrolledCOurseByCourseId ,enrollCourse ,isEnrolled  , progressCounter};
