@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { fa } from "zod/v4/locales";
-import { lessonSchema, moduleSchema } from "./lesson.model";
+import {  moduleSchema } from "./lesson.model";
 
 
 

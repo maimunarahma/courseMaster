@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { verifyToken } from "../utils/jwt";
 import { Enrollment } from "../models/enrollment.model";
+import { Course } from "../models/course.model";
 
 
 const getEnrolledCourses = async (req: Request, res: Response) => {

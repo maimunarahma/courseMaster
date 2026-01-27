@@ -120,11 +120,14 @@ const updateCourse = async (req: Request, res: Response) => {
         if (req.body.courseRequirements !== undefined) updateData.courseRequirements = req.body.courseRequirements;
         if (req.body.courseObjectives !== undefined) updateData.courseObjectives = req.body.courseObjectives;
         
-        // Handle lessons - wrap in array if needed
+        // Handle lessons - append to existing array instead of replacing
         if (req.body.lessons !== undefined) {
             console.log("Raw lessons input:", JSON.stringify(req.body.lessons, null, 2));
-            updateData.lessons = Array.isArray(req.body.lessons.module) ? req.body.lessons.module : [req.body.lessons.module];
-            console.log("Processed lessons:", JSON.stringify(updateData.lessons, null, 2));
+            const newLessons = Array.isArray(req.body.lessons) ? req.body.lessons : [req.body.lessons];
+            console.log("Processed lessons:", JSON.stringify(newLessons, null, 2));
+            
+            // Use $push to append new lessons to the existing array
+            updateData.$push = { lessons: { $each: newLessons } };
         }
         
         console.log("Full update data:", JSON.stringify(updateData, null, 2));
