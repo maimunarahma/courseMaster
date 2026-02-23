@@ -199,7 +199,7 @@ export const clearChatHistory = async (req: Request, res: Response) => {
     });
 
     if (chatSession) {
-      chatSession.messages = [];
+      chatSession.messages.splice(0, chatSession.messages.length);
       await chatSession.save();
     }
 
