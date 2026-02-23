@@ -6,6 +6,7 @@ import { enrollRoutes } from "./enroll.route";
 import { quizRoutes } from "./quiz.route";
 import { assignmentRoutes } from "./assignment.route";
 import uploadRoutes from "./upload.route";
+import { chatRoutes } from "./chat.route";
 
 
 export const router=Router()
@@ -37,6 +38,14 @@ const moduleROutes= [
      {
           path : "/upload",
                route: uploadRoutes
+     },
+     {
+          path : "/profile",
+               route: userRoutes
+     },
+     {
+          path : "/chat",
+               route: chatRoutes
      }
 ]
 
