@@ -67,11 +67,26 @@ export const submitCodeForReview = async (req: Request, res: Response) => {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Code review error:", error);
+    
+    // Check if it's a Gemini API error
+    const errorMessage = error.message || "";
+    const isHighDemandError = errorMessage.includes("503") || 
+                              errorMessage.includes("UNAVAILABLE") || 
+                              errorMessage.includes("high demand");
+    
+    if (isHighDemandError) {
+      return res.status(503).json({ 
+        message: "AI service is currently experiencing high demand. Please try again in a few moments.",
+        error: "Service temporarily unavailable",
+        retryAfter: 30 // seconds
+      });
+    }
+    
     return res.status(500).json({ 
       message: "Error processing code review",
-      error: (error as Error).message 
+      error: errorMessage
     });
   }
 };
@@ -115,11 +130,26 @@ export const quickCodeReview = async (req: Request, res: Response) => {
       }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Quick code review error:", error);
+    
+    // Check if it's a Gemini API error
+    const errorMessage = error.message || "";
+    const isHighDemandError = errorMessage.includes("503") || 
+                              errorMessage.includes("UNAVAILABLE") || 
+                              errorMessage.includes("high demand");
+    
+    if (isHighDemandError) {
+      return res.status(503).json({ 
+        message: "AI service is currently experiencing high demand. Please try again in a few moments.",
+        error: "Service temporarily unavailable",
+        retryAfter: 30 // seconds
+      });
+    }
+    
     return res.status(500).json({ 
       message: "Error processing code review",
-      error: (error as Error).message 
+      error: errorMessage
     });
   }
 };
