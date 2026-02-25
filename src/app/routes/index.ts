@@ -7,6 +7,7 @@ import { quizRoutes } from "./quiz.route";
 import { assignmentRoutes } from "./assignment.route";
 import uploadRoutes from "./upload.route";
 import { chatRoutes } from "./chat.route";
+import { codeReviewRoutes } from "./codeReview.route";
 
 
 export const router=Router()
@@ -46,6 +47,10 @@ const moduleROutes= [
      {
           path : "/chat",
                route: chatRoutes
+     },
+     {
+          path : "/codeReview",
+               route: codeReviewRoutes
      }
 ]
 
