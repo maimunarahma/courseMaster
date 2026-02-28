@@ -74,52 +74,57 @@ const getQuizById = async (req: Request, res: Response) => {
 
 
 
-const generateQuiz = async (req : Request, res : Response) => {
+const generateQuiz = async (req: Request, res: Response) => {
   try {
-    const {courseId} = req.params;
-    const title= await Course.findById(courseId).then(c=>c?.title || null);
-    if(title===null){
+    const { courseId } = req.params;
+    const { regenerate, previousQuizId } = req.body;
+  
+    const title = await Course.findById(courseId).then(c => c?.title || null);
+    if (title === null) {
       return res.status(404).json({ success: false, message: "Course not found" });
     }
-    console.log(title)
-    // const { topic = title, difficulty= "medium" , count = 10 } 
+    console.log(title);
 
-    if (title===null ) {
-      return res.status(400).json({
-        success: false,
-        message: "Missing required fields: topic, difficulty, or count"
-      });
+    // If regenerating, delete the previous quiz to ensure fresh generation
+    if (regenerate && previousQuizId) {
+      await Quiz.findByIdAndDelete(previousQuizId);
+      console.log("Deleted previous quiz:", previousQuizId);
     }
 
-    const prompt = quizPrompt(title, "medium" ,  10);
+    // Enhanced prompt for unique questions on regeneration
+    const regenerateInstruction = regenerate 
+      ? "IMPORTANT: Generate completely NEW and DIFFERENT questions than any previous quiz. Use varied question formats, different aspects of the topic, and unique scenarios." 
+      : "";
+    
+    const prompt = quizPrompt(title, "medium", 10) + "\n" + regenerateInstruction;
     console.log("Calling Gemini with prompt for topic:", title);
     
     const aiResponse = await callGemini(prompt);
     console.log("AI Response received:", aiResponse);
 
+    const quiz = await extractJSON(aiResponse);
     
-    const quiz =await extractJSON(aiResponse);
-  const quizzes=await Quiz.create({
+    const quizzes = await Quiz.create({
       course: courseId,
       title: `Quiz on ${title}`,
       questions: quiz.questions
-
     });
-     await quizzes.save();
-   return res.json({
+    
+    await quizzes.save();
+    
+    return res.json({
       success: true,
       quiz: quizzes
     });
 
   } catch (error: any) {
     console.error("Quiz generation error:", error);
-   return res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message || "AI quiz generation failed"
     });
   }
 };
-
 
 export const quizController = { getQuizzesByCourse, getQuizById, generateQuiz };
 
